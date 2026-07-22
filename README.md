@@ -1,2 +1,13 @@
-# Machine-Learning-Projects
-Machine Learning Internship projects completed during CodSoft Internship using Python, Scikit-learn, and Machine Learning algorithms.
+# Movie Genre Classification
+## Description
+This project predicts the genre of a movie based on its description using Machine Learning and NLP.
+## Technologies Used
+- Python
+- Pandas
+- Scikit-learn
+- TF-IDF
+- LinearSVC
+## Accuracy
+60.35%
+## How to Run
+python app.py
