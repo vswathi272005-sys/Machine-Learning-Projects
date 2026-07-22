@@ -1,17 +1,21 @@
-# Credit Card Fraud Detection
+# Customer Churn Prediction
 ## Description
-This project detects whether a credit card transaction is fraudulent or legitimate using Machine Learning.
+This project predicts whether a customer is likely to leave a company or continue using its services using Machine Learning.
 ## Technologies Used
 - Python
 - Pandas
 - Scikit-learn
-- Machine Learning
+- Logistic Regression
 ## Features
 - Data Preprocessing
-- Fraud Detection
+- Customer Churn Prediction
 - Model Training
 - Prediction
 ## How to Run
 ```bash
 python app.py
 ```
+## Output
+The model predicts whether the customer will:
+- Stay
+- Churn

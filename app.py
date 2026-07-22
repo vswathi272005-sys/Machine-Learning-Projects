@@ -1,38 +1,42 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-train_data = pd.read_csv("fraudTrain.csv",nrows=20000)
-test_data = pd.read_csv("fraudTest.csv",nrows=10000)
-print("Train Dataset Loaded Successfully!")
-print(train_data.head())
-train_data = train_data.dropna()
-test_data = test_data.dropna()
-features = ["amt","city_pop","lat","long","merch_lat","merch_long"]
-X_train = train_data[features]
-y_train = train_data["is_fraud"]
-X_test = test_data[features]
-y_test = test_data["is_fraud"]
-model = DecisionTreeClassifier(random_state=42)
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+data = pd.read_csv("Churn_Modelling.csv")
+print("Dataset Loaded Successfully!\n")
+print(data.head())
+data = data.drop(["RowNumber", "CustomerId", "Surname"], axis=1)
+data["Gender"] = data["Gender"].map({"Male": 1,"Female": 0})
+data = pd.get_dummies(data, columns=["Geography"], drop_first=True)
+X = data.drop("Exited", axis=1)
+y = data["Exited"]
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print("\n==============================")
+print("\n==========================")
 print("Model Accuracy :", round(accuracy * 100, 2), "%")
-print("==============================")
+print("==========================")
 print("\nConfusion Matrix")
 print(confusion_matrix(y_test, y_pred))
 print("\nClassification Report")
 print(classification_report(y_test, y_pred))
-print("\nEnter Transaction Details")
-amt = float(input("Amount: "))
-city_pop = int(input("City Population: "))
-lat = float(input("Latitude: "))
-long = float(input("Longitude: "))
-merch_lat = float(input("Merchant Latitude: "))
-merch_long = float(input("Merchant Longitude: "))
-new_transaction = pd.DataFrame([[amt, city_pop, lat, long, merch_lat, merch_long]],columns=features)
-prediction = model.predict(new_transaction)
+print("\nEnter Customer Details")
+credit_score = int(input("Credit Score: "))
+gender = int(input("Gender (Male=1, Female=0): "))
+age = int(input("Age: "))
+tenure = int(input("Tenure: "))
+balance = float(input("Balance: "))
+products = int(input("Number of Products: "))
+has_card = int(input("Has Credit Card (1=Yes, 0=No): "))
+active = int(input("Is Active Member (1=Yes, 0=No): "))
+salary = float(input("Estimated Salary: "))
+germany = int(input("Germany (1=Yes, 0=No): "))
+spain = int(input("Spain (1=Yes, 0=No): "))
+new_customer = pd.DataFrame([[credit_score,gender,age,tenure,balance,products,has_card,active,salary,germany,spain]],columns=X.columns)
+prediction = model.predict(new_customer)
 if prediction[0] == 1:
-    print("\nFraudulent Transaction")
+    print("\nCustomer is likely to CHURN.")
 else:
-    print("\nLegitimate Transaction")
+    print("\nCustomer is likely to STAY.")
