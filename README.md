@@ -1,13 +1,17 @@
-# Movie Genre Classification
+# Credit Card Fraud Detection
 ## Description
-This project predicts the genre of a movie based on its description using Machine Learning and NLP.
+This project detects whether a credit card transaction is fraudulent or legitimate using Machine Learning.
 ## Technologies Used
 - Python
 - Pandas
 - Scikit-learn
-- TF-IDF
-- LinearSVC
-## Accuracy
-60.35%
+- Machine Learning
+## Features
+- Data Preprocessing
+- Fraud Detection
+- Model Training
+- Prediction
 ## How to Run
+```bash
 python app.py
+```

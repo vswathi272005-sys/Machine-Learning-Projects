@@ -1,34 +1,38 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
-from sklearn.metrics import accuracy_score
-data = pd.read_csv("train_data.txt",sep=":::",engine="python",names=["ID", "Title", "Genre", "Description"],nrows=15000)
-print("Dataset Loaded Successfully!\n")
-print(data.head())
-data = data.dropna()
-data["Genre"] = data["Genre"].str.strip().str.lower()
-data["Description"] = data["Description"].str.strip().str.lower()
-X = data["Description"]
-y = data["Genre"]
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
-tfidf = TfidfVectorizer(stop_words="english",max_features=30000,ngram_range=(1, 2),min_df=2,max_df=0.9,sublinear_tf=True)
-X_train = tfidf.fit_transform(X_train)
-X_test = tfidf.transform(X_test)
-model = LinearSVC(C=2.0)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+train_data = pd.read_csv("fraudTrain.csv",nrows=20000)
+test_data = pd.read_csv("fraudTest.csv",nrows=10000)
+print("Train Dataset Loaded Successfully!")
+print(train_data.head())
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+features = ["amt","city_pop","lat","long","merch_lat","merch_long"]
+X_train = train_data[features]
+y_train = train_data["is_fraud"]
+X_test = test_data[features]
+y_test = test_data["is_fraud"]
+model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print("\n==============================")
 print("Model Accuracy :", round(accuracy * 100, 2), "%")
 print("==============================")
-while True:
-    movie = input("\nEnter Movie Description : ")
-    movie = movie.strip().lower()
-    movie_vector = tfidf.transform([movie])
-    prediction = model.predict(movie_vector)
-    print("\nPredicted Genre :", prediction[0])
-    choice = input("\nPredict another movie? (yes/no): ")
-    if choice.lower() != "yes":
-        print("\nThank You!")
-        break
+print("\nConfusion Matrix")
+print(confusion_matrix(y_test, y_pred))
+print("\nClassification Report")
+print(classification_report(y_test, y_pred))
+print("\nEnter Transaction Details")
+amt = float(input("Amount: "))
+city_pop = int(input("City Population: "))
+lat = float(input("Latitude: "))
+long = float(input("Longitude: "))
+merch_lat = float(input("Merchant Latitude: "))
+merch_long = float(input("Merchant Longitude: "))
+new_transaction = pd.DataFrame([[amt, city_pop, lat, long, merch_lat, merch_long]],columns=features)
+prediction = model.predict(new_transaction)
+if prediction[0] == 1:
+    print("\nFraudulent Transaction")
+else:
+    print("\nLegitimate Transaction")
